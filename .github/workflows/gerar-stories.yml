@@ -1,6 +1,9 @@
 name: Gerar Stories de Citacoes
 
 on:
+  schedule:
+    # 04:00 no horário de Brasília (UTC-3)
+    - cron: "0 7 * * *"
   workflow_dispatch:
     inputs:
       quantidade:
@@ -51,8 +54,8 @@ jobs:
         env:
           TEST_TELEGRAM_BOT_TOKEN: ${{ secrets.TEST_TELEGRAM_BOT_TOKEN }}
           TEST_TELEGRAM_CHAT_ID: ${{ secrets.TEST_TELEGRAM_CHAT_ID }}
-          STORIES_PER_RUN: ${{ inputs.quantidade }}
-        run: python main.py --count "${{ inputs.quantidade }}" --day "${{ inputs.dia }}"
+          STORIES_PER_RUN: ${{ inputs.quantidade || '2' }}
+        run: python main.py --count "${{ inputs.quantidade || '2' }}" --day "${{ inputs.dia || 'automatico' }}"
 
       - name: Persistir historico
         if: success()
