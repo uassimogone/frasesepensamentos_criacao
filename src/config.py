@@ -12,8 +12,8 @@ TELEGRAM_CHAT_ID = os.getenv("TEST_TELEGRAM_CHAT_ID", "").strip()
 STORIES_PER_RUN = int(os.getenv("STORIES_PER_RUN", "2"))
 
 TEXT_MODELS = [
-    "gemini-2.5-flash",
-    "gemini-2.5-flash-lite",
+    "gemini-3.5-flash-lite",
+    "gemini-3.5-flash",
 ]
 
 HISTORY_PATH = BASE_DIR / "data" / "history.json"
