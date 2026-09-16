@@ -55,7 +55,7 @@ class QuoteResearcher:
 
             candidates.append(
                 VerifiedQuote(
-                    quote_pt=text.strip(" -–—"),
+                    quote_pt=self._strip_wrapping_quotes(text.strip(" -–—")),
                     author=author,
                     source_title=f"Wikiquote em português — {page}",
                     source_url=f"https://pt.wikiquote.org/wiki/{quote(page.replace(' ', '_'))}",
@@ -84,6 +84,16 @@ class QuoteResearcher:
             return response.json().get("parse", {}).get("text", {}).get("*", "")
         except (requests.RequestException, ValueError):
             return ""
+
+    @staticmethod
+    def _strip_wrapping_quotes(text: str) -> str:
+        """Remove pares de aspas externas; preserva aspas usadas dentro da frase."""
+        opening = {'"', "“", "„", "‟", "«", "‹"}
+        closing = {'"', "”", "“", "‟", "»", "›"}
+        cleaned = text.strip()
+        while len(cleaned) >= 2 and cleaned[0] in opening and cleaned[-1] in closing:
+            cleaned = cleaned[1:-1].strip()
+        return cleaned
 
     @staticmethod
     def _is_usable_quote(text: str) -> bool:
