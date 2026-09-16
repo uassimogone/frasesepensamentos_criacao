@@ -1,5 +1,6 @@
 from PIL import Image
 
+from src.editorial_calendar import get_profile
 from src.models import VerifiedQuote
 from src.story_renderer import StoryRenderer
 
@@ -14,7 +15,7 @@ def test_renderer_creates_instagram_story(tmp_path):
         source_excerpt="Trecho",
     )
     output = tmp_path / "story.png"
-    StoryRenderer().render(quote, output)
+    StoryRenderer().render(quote, get_profile("quarta"), output)
 
     with Image.open(output) as image:
         assert image.size == (1080, 1920)
