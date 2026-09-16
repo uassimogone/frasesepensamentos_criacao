@@ -2,49 +2,38 @@
 
 ## Escopo
 
-A automação produz Stories para o perfil `@uassimogone` contendo uma única citação verificada por arte.
+A automação produz Stories para o perfil `@uassimogone` contendo uma única citação por arte, obtida de fonte pública gratuita e rastreável.
 
 ## Critério de publicação
 
-Uma citação somente pode ser utilizada quando houver evidência suficiente de:
+Uma citação somente pode ser utilizada quando a página de origem:
 
-1. autoria;
-2. texto original ou equivalente;
-3. obra, discurso, entrevista ou publicação;
-4. fonte acessível e consultável;
-5. fidelidade da tradução, quando aplicável.
+1. identifica o autor;
+2. exibe a citação;
+3. apresenta ao menos uma referência bibliográfica ou editorial ligada à citação;
+4. permanece acessível por link.
 
-## Fontes preferenciais
+A página do Wikiquote é a fonte de curadoria; a referência nela exibida deve ser conferida durante a fase de testes antes de publicação.
 
-1. Obra original digitalizada ou transcrita.
-2. Site ou arquivo oficial do autor ou instituição responsável.
-3. Universidade, fundação, museu, prêmio ou arquivo histórico.
-4. Transcrição oficial de discurso ou entrevista.
-5. Projeto editorial reconhecido de preservação de obras.
+## Fontes utilizadas
 
-## Fontes insuficientes
+Inicialmente, a automação consulta páginas em português do Wikiquote, que são gratuitas e públicas. A lista de autores fica versionada no repositório e pode ser ampliada sem custo.
 
-Não comprovam autoria isoladamente:
+## Fontes proibidas como prova isolada
 
 - Pinterest;
 - Instagram, TikTok, Facebook e X;
 - sites genéricos de frases;
 - imagens com frases;
-- compilações sem indicação da obra;
-- páginas que apenas repetem a atribuição.
-
-Essas páginas podem indicar uma pista, mas a citação só prossegue quando outra fonte adequada for encontrada.
+- compilações sem indicação de referência.
 
 ## Traduções
 
-- A ficha do Telegram deve trazer o trecho original sempre que disponível.
-- A tradução precisa preservar o sentido.
-- Traduções livres, adaptações e paráfrases são rejeitadas no MVP.
-- O Story exibe a versão em português; a ficha registra que houve tradução.
+O MVP publica somente o texto exibido pela fonte em português. Não cria traduções, adaptações ou paráfrases por IA.
 
 ## Dúvida
 
-Na dúvida, descartar. A automação deve aceitar produzir menos de dois Stories em uma execução quando não houver candidatos suficientemente comprovados.
+Na dúvida, descartar. A automação deve aceitar produzir menos de dois Stories em uma execução quando não houver candidatos suficientemente rastreáveis.
 
 ## Identidade visual inicial
 
