@@ -4,28 +4,28 @@
 
 A automação produz Stories para o perfil `@uassimogone` contendo uma única citação por arte, obtida de fonte pública gratuita e rastreável.
 
-## Critério de publicação
+## Critério de seleção
 
-Uma citação somente pode ser utilizada quando a página de origem:
+Uma citação somente pode ser utilizada quando:
 
-1. identifica o autor;
-2. exibe a citação;
-3. apresenta ao menos uma referência bibliográfica ou editorial ligada à citação;
-4. permanece acessível por link.
+1. estiver em uma página de autor da lista curada;
+2. tiver texto entre 25 e 260 caracteres;
+3. não for marcada pela própria página como “carece de fontes”;
+4. não estiver no histórico de publicações.
 
-A página do Wikiquote é a fonte de curadoria; a referência nela exibida deve ser conferida durante a fase de testes antes de publicação.
+A página do Wikiquote é a fonte de curadoria e seu link segue na ficha do Telegram para conferência humana durante a fase de testes.
 
-## Fontes utilizadas
+## Fonte utilizada
 
 Inicialmente, a automação consulta páginas em português do Wikiquote, que são gratuitas e públicas. A lista de autores fica versionada no repositório e pode ser ampliada sem custo.
 
-## Fontes proibidas como prova isolada
+## Fontes proibidas como curadoria
 
 - Pinterest;
 - Instagram, TikTok, Facebook e X;
 - sites genéricos de frases;
 - imagens com frases;
-- compilações sem indicação de referência.
+- compilações sem identificação de autor.
 
 ## Traduções
 
@@ -33,7 +33,7 @@ O MVP publica somente o texto exibido pela fonte em português. Não cria tradu�
 
 ## Dúvida
 
-Na dúvida, descartar. A automação deve aceitar produzir menos de dois Stories em uma execução quando não houver candidatos suficientemente rastreáveis.
+A automação descarta as citações explicitamente marcadas como sem fonte. Durante os testes, o link da ficha deve ser conferido antes da publicação.
 
 ## Identidade visual inicial
 
