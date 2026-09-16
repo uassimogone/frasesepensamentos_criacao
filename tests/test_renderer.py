@@ -20,3 +20,9 @@ def test_renderer_creates_instagram_story(tmp_path):
     with Image.open(output) as image:
         assert image.size == (1080, 1920)
         assert image.format == "PNG"
+
+def test_renderer_removes_only_wrapping_quotes():
+    renderer = StoryRenderer()
+
+    assert renderer._strip_wrapping_quotes('““A vida é agora.””') == "A vida é agora."
+    assert renderer._strip_wrapping_quotes('Ela disse “sim” com firmeza.') == 'Ela disse “sim” com firmeza.'
