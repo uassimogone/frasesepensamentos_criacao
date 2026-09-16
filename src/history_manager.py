@@ -19,13 +19,15 @@ class HistoryManager:
         except (json.JSONDecodeError, OSError):
             return []
 
-    def is_duplicate(self, quote: VerifiedQuote, threshold: float = 0.88) -> bool:
+    def is_duplicate(self, quote: VerifiedQuote, threshold: float = 0.80) -> bool:
         candidate = normalize_text(quote.quote_pt)
         for item in self.read():
             if item.get("content_id") == quote.content_id:
                 return True
             previous = normalize_text(item.get("quote_pt", ""))
-            if previous and SequenceMatcher(None, candidate, previous).ratio() >= threshold:
+            same_author = normalize_text(item.get("author", "")) == normalize_text(quote.author)
+            similarity = SequenceMatcher(None, candidate, previous).ratio() if previous else 0
+            if same_author and similarity >= threshold:
                 return True
         return False
 
