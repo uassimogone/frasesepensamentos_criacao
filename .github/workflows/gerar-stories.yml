@@ -15,9 +15,6 @@ on:
         default: "automatico"
         type: choice
         options: ["automatico", "segunda", "terca", "quarta", "quinta", "sexta", "sabado", "domingo"]
-  push:
-    paths:
-      - ".github/manual-trigger.txt"
 
 jobs:
   gerar:
@@ -54,8 +51,8 @@ jobs:
         env:
           TEST_TELEGRAM_BOT_TOKEN: ${{ secrets.TEST_TELEGRAM_BOT_TOKEN }}
           TEST_TELEGRAM_CHAT_ID: ${{ secrets.TEST_TELEGRAM_CHAT_ID }}
-          STORIES_PER_RUN: ${{ inputs.quantidade || '2' }}
-        run: python main.py --count "${{ inputs.quantidade || '2' }}" --day "${{ inputs.dia || 'automatico' }}"
+          STORIES_PER_RUN: ${{ inputs.quantidade }}
+        run: python main.py --count "${{ inputs.quantidade }}" --day "${{ inputs.dia }}"
 
       - name: Persistir historico
         if: success()
