@@ -27,7 +27,7 @@ class HistoryManager:
             previous = normalize_text(item.get("quote_pt", ""))
             same_author = normalize_text(item.get("author", "")) == normalize_text(quote.author)
             similarity = SequenceMatcher(None, candidate, previous).ratio() if previous else 0
-            if same_author and similarity >= threshold:
+            if similarity >= 0.95 or (same_author and similarity >= threshold):
                 return True
         return False
 
