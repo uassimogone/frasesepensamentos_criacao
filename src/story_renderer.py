@@ -38,7 +38,8 @@ class StoryRenderer:
         label_font = ImageFont.truetype(self.fonts["sans_bold"], 30)
         draw.text((self.SIDE_MARGIN, self.SAFE_TOP + 38), profile.label, font=label_font, fill=profile.accent)
 
-        quote_font, lines = self._fit_quote(draw, f"“{quote.quote_pt}”", profile.quote_style)
+        quote_text = self._strip_wrapping_quotes(quote.quote_pt)
+        quote_font, lines = self._fit_quote(draw, f"“{quote_text}”", profile.quote_style)
         line_height = int(quote_font.size * 1.38)
         block_height = len(lines) * line_height
         top_limit = self.SAFE_TOP + 150
@@ -74,6 +75,16 @@ class StoryRenderer:
                 return font, lines
         font = ImageFont.truetype(self.fonts[font_name], 40)
         return font, self._wrap_by_pixels(draw, text, font, max_width)
+
+    @staticmethod
+    def _strip_wrapping_quotes(text: str) -> str:
+        """Garante que a arte receba o texto sem aspas externas duplicadas."""
+        opening = {'"', "“", "„", "‟", "«", "‹"}
+        closing = {'"', "”", "“", "‟", "»", "›"}
+        cleaned = text.strip()
+        while len(cleaned) >= 2 and cleaned[0] in opening and cleaned[-1] in closing:
+            cleaned = cleaned[1:-1].strip()
+        return cleaned
 
     @staticmethod
     def _wrap_by_pixels(draw, text, font, max_width):
