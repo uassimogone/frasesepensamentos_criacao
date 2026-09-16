@@ -2,7 +2,6 @@ import argparse
 import sys
 
 from src.config import (
-    GEMINI_API_KEY,
     HISTORY_PATH,
     OUTPUT_DIR,
     STORIES_PER_RUN,
@@ -16,18 +15,16 @@ from src.telegram_bot import TelegramBot
 
 
 def run(total: int) -> int:
-    print(f"▶️ Iniciando geração de {total} Stories verificados.")
+    print(f"▶️ Iniciando geração de {total} Stories com fontes públicas.")
     history = HistoryManager(HISTORY_PATH)
-    researcher = QuoteResearcher(GEMINI_API_KEY)
+    researcher = QuoteResearcher()
     renderer = StoryRenderer()
     telegram = TelegramBot(TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID)
 
-    candidates = researcher.research(desired=max(total * 2, 4), recent_items=history.read())
+    candidates = researcher.research(desired=total, recent_items=history.read())
     sent = 0
 
     for quote in candidates:
-        if sent >= total:
-            break
         if history.is_duplicate(quote):
             print(f"⏭️ Duplicata descartada: {quote.author}")
             continue
@@ -42,7 +39,7 @@ def run(total: int) -> int:
     if sent < total:
         warning = (
             f"⚠️ Execução concluída com {sent}/{total} Stories. "
-            "Os demais candidatos não passaram pelas verificações."
+            "Não havia outras citações inéditas com referência adequada nas fontes consultadas."
         )
         print(warning)
         telegram.send_message(warning)
