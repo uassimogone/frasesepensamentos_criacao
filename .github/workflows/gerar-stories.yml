@@ -8,10 +8,13 @@ on:
         required: true
         default: "2"
         type: choice
-        options:
-          - "1"
-          - "2"
-          - "3"
+        options: ["1", "2", "3"]
+      dia:
+        description: Dia editorial (automatico usa o dia atual)
+        required: true
+        default: "automatico"
+        type: choice
+        options: ["automatico", "segunda", "terca", "quarta", "quinta", "sexta", "sabado", "domingo"]
 
 jobs:
   gerar:
@@ -49,7 +52,7 @@ jobs:
           TEST_TELEGRAM_BOT_TOKEN: ${{ secrets.TEST_TELEGRAM_BOT_TOKEN }}
           TEST_TELEGRAM_CHAT_ID: ${{ secrets.TEST_TELEGRAM_CHAT_ID }}
           STORIES_PER_RUN: ${{ inputs.quantidade }}
-        run: python main.py --count "${{ inputs.quantidade }}"
+        run: python main.py --count "${{ inputs.quantidade }}" --day "${{ inputs.dia }}"
 
       - name: Persistir historico
         if: success()
