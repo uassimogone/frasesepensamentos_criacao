@@ -13,9 +13,8 @@ from src.models import VerifiedQuote
 class QuoteResearcher:
     """Coleta citações de páginas públicas do Wikiquote em português.
 
-    A automação só aceita itens que carreguem referência na própria página.
-    O Wikiquote é usado como fonte de curadoria e rastreabilidade; a ficha
-    enviada ao Telegram preserva o link para conferência humana.
+    O Wikiquote é a fonte gratuita de curadoria e rastreabilidade. A automação
+    descarta itens explicitamente marcados pela própria página como sem fonte.
     """
 
     API_URL = "https://pt.wikiquote.org/w/api.php"
@@ -29,12 +28,12 @@ class QuoteResearcher:
         for author in authors:
             if len(selected) >= desired:
                 break
-            for quote in self._quotes_from_author(author):
-                if quote.content_id in used_ids:
+            for quote_item in self._quotes_from_author(author):
+                if quote_item.content_id in used_ids:
                     continue
-                if any(item.content_id == quote.content_id for item in selected):
+                if any(item.content_id == quote_item.content_id for item in selected):
                     continue
-                selected.append(quote)
+                selected.append(quote_item)
                 break  # diversidade: no máximo uma citação por autor a cada execução
         return selected
 
@@ -45,34 +44,26 @@ class QuoteResearcher:
 
         soup = BeautifulSoup(html, "html.parser")
         candidates = []
-        for item in soup.select("#mw-content-text li"):
-            reference = item.find("sup", class_="reference")
-            if reference is None:
-                continue
-
-            reference.decompose()
+        for item in soup.select("li"):
             text = " ".join(item.get_text(" ", strip=True).split())
-            text = re.sub(r"\s*\[\d+\]\s*", " ", text).strip()
-            text = self._strip_editorial_suffix(text)
-
             if not self._is_usable_quote(text):
                 continue
 
             candidates.append(
                 VerifiedQuote(
-                    quote_pt=text,
+                    quote_pt=text.strip(" -–—"),
                     author=author,
                     source_title=f"Wikiquote em português — {author}",
                     source_url=f"https://pt.wikiquote.org/wiki/{quote(author.replace(' ', '_'))}",
-                    source_type="página pública com referência",
-                    source_excerpt="A citação possui referência indicada na página de origem.",
+                    source_type="página pública de curadoria",
+                    source_excerpt="Citação disponível na página pública do autor.",
                     original_quote="",
                     original_language="português",
                     translated=False,
                     theme="pensamento",
                     verification_note=(
-                        "Citação coletada de página pública com referência. "
-                        "Confira a referência no link antes da publicação definitiva."
+                        "Citação coletada de página pública de curadoria, sem marcação "
+                        "de ausência de fonte. Confira o link antes da publicação definitiva."
                     ),
                 )
             )
@@ -98,15 +89,17 @@ class QuoteResearcher:
             return ""
 
     @staticmethod
-    def _strip_editorial_suffix(text: str) -> str:
-        # Remover apenas notas editoriais evidentes; não altera o conteúdo da frase.
-        text = re.sub(r"\s*\(.*?(?:carece|citação|fonte).{0,80}\)$", "", text, flags=re.I)
-        return text.strip(" -–—")
-
-    @staticmethod
     def _is_usable_quote(text: str) -> bool:
+        normalized = text.lower()
         if not 25 <= len(text) <= 260:
             return False
         if text.endswith(":") or text.count("http") > 0:
             return False
-        return not any(marker in text.lower() for marker in ["ver também", "ligações externas"])
+        rejected = [
+            "ver também",
+            "ligações externas",
+            "carece de fontes",
+            "carece de fonte",
+            "citação necessária",
+        ]
+        return not any(marker in normalized for marker in rejected)
