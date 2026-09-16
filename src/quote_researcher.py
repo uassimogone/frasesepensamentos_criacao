@@ -1,180 +1,112 @@
-import json
+import random
 import re
-import time
-from urllib.parse import urlparse
+from datetime import date
+from urllib.parse import quote
 
 import requests
 from bs4 import BeautifulSoup
-from google import genai
-from google.genai import types
 
-from src.config import BLOCKED_SOURCE_DOMAINS, TEXT_MODELS
+from src.config import WIKIQUOTE_AUTHORS
 from src.models import VerifiedQuote
 
 
 class QuoteResearcher:
-    def __init__(self, api_key: str):
-        if not api_key:
-            raise ValueError("GEMINI_API_KEY não configurada.")
-        self.client = genai.Client(api_key=api_key)
+    """Coleta citações de páginas públicas do Wikiquote em português.
+
+    A automação só aceita itens que carreguem referência na própria página.
+    O Wikiquote é usado como fonte de curadoria e rastreabilidade; a ficha
+    enviada ao Telegram preserva o link para conferência humana.
+    """
+
+    API_URL = "https://pt.wikiquote.org/w/api.php"
 
     def research(self, desired: int, recent_items: list[dict]) -> list[VerifiedQuote]:
-        recent = [
-            {"author": item.get("author"), "quote": item.get("quote_pt")}
-            for item in recent_items[-80:]
-        ]
-        prompt = f"""
-Pesquise citações autênticas para Stories em português.
-Precisamos obter {max(desired * 4, 8)} candidatos para selecionar {desired}.
+        used_ids = {item.get("content_id") for item in recent_items}
+        authors = list(WIKIQUOTE_AUTHORS)
+        random.Random(date.today().isoformat()).shuffle(authors)
 
-TEMAS: estoicismo, filosofia, ética, responsabilidade, disciplina, coragem,
-tempo, família, propósito, liderança, liberdade e sociedade.
-AUTORES: filósofos, escritores, cientistas, estadistas e personalidades
-históricas ou atuais. Varie autores, épocas, gênero e áreas.
-
-REGRAS ABSOLUTAS:
-- Somente citações comprováveis.
-- Priorize obra original, transcrição oficial, arquivo institucional,
-  fundação, universidade, museu, Nobel, Project Gutenberg ou Wikisource.
-- Não use Pinterest, Instagram, TikTok, sites de frases ou compilações sem referência.
-- Não invente, complete, melhore ou parafraseie.
-- Máximo de 260 caracteres na versão em português.
-- Se traduzida, forneça também o trecho original.
-- A URL deve apontar para a página que contém a evidência, não para busca.
-- Informe um trecho da fonte que permita conferir a frase.
-- Não repita estes conteúdos recentes: {json.dumps(recent, ensure_ascii=False)}
-
-Retorne exclusivamente JSON:
-[
-  {{
-    "quote_pt": "citação em português",
-    "original_quote": "texto original ou vazio",
-    "original_language": "idioma ou vazio",
-    "translated": true,
-    "author": "nome",
-    "source_title": "obra, discurso ou entrevista",
-    "source_url": "https://...",
-    "source_type": "livro|discurso|entrevista|publicacao_oficial|arquivo_institucional",
-    "source_excerpt": "trecho de comprovação",
-    "theme": "tema"
-  }}
-]
-"""
-        raw = self._generate_with_search(prompt)
-        candidates = self._parse_list(raw)
-        verified = []
-        for item in candidates:
-            if len(verified) >= desired:
+        selected = []
+        for author in authors:
+            if len(selected) >= desired:
                 break
-            try:
-                quote = VerifiedQuote.from_dict(item)
-                if not self._basic_validation(quote):
+            for quote in self._quotes_from_author(author):
+                if quote.content_id in used_ids:
                     continue
-                page_text = self._fetch_source_text(quote.source_url)
-                if not page_text:
+                if any(item.content_id == quote.content_id for item in selected):
                     continue
-                decision = self._verify_against_source(quote, page_text)
-                if not decision.get("verified", False):
-                    continue
-                quote.verification_note = decision.get("reason", "Confirmada na fonte.")
-                verified.append(quote)
-            except Exception as exc:
-                print(f"⚠️ Candidato descartado: {exc}")
-        return verified
+                selected.append(quote)
+                break  # diversidade: no máximo uma citação por autor a cada execução
+        return selected
 
-    def _generate_with_search(self, prompt: str) -> str:
-        last_error = None
-        for model in TEXT_MODELS:
-            try:
-                response = self.client.models.generate_content(
-                    model=model,
-                    contents=prompt,
-                    config=types.GenerateContentConfig(
-                        tools=[types.Tool(google_search=types.GoogleSearch())],
-                        temperature=0.2,
+    def _quotes_from_author(self, author: str) -> list[VerifiedQuote]:
+        html = self._fetch_page(author)
+        if not html:
+            return []
+
+        soup = BeautifulSoup(html, "html.parser")
+        candidates = []
+        for item in soup.select("#mw-content-text li"):
+            reference = item.find("sup", class_="reference")
+            if reference is None:
+                continue
+
+            reference.decompose()
+            text = " ".join(item.get_text(" ", strip=True).split())
+            text = re.sub(r"\s*\[\d+\]\s*", " ", text).strip()
+            text = self._strip_editorial_suffix(text)
+
+            if not self._is_usable_quote(text):
+                continue
+
+            candidates.append(
+                VerifiedQuote(
+                    quote_pt=text,
+                    author=author,
+                    source_title=f"Wikiquote em português — {author}",
+                    source_url=f"https://pt.wikiquote.org/wiki/{quote(author.replace(' ', '_'))}",
+                    source_type="página pública com referência",
+                    source_excerpt="A citação possui referência indicada na página de origem.",
+                    original_quote="",
+                    original_language="português",
+                    translated=False,
+                    theme="pensamento",
+                    verification_note=(
+                        "Citação coletada de página pública com referência. "
+                        "Confira a referência no link antes da publicação definitiva."
                     ),
                 )
-                return response.text or "[]"
-            except Exception as exc:
-                last_error = exc
-                time.sleep(2)
-        raise RuntimeError(f"Falha em todos os modelos de pesquisa: {last_error}")
+            )
+        return candidates
 
-    def _parse_list(self, raw: str) -> list[dict]:
-        cleaned = re.sub(r"^\s*\x60\x60\x60(?:json)?|\x60\x60\x60\s*$", "", raw.strip(), flags=re.I)
-        data = json.loads(cleaned)
-        return data if isinstance(data, list) else []
-
-    def _basic_validation(self, quote: VerifiedQuote) -> bool:
-        required = [
-            quote.quote_pt,
-            quote.author,
-            quote.source_title,
-            quote.source_url,
-            quote.source_excerpt,
-        ]
-        if not all(required) or len(quote.quote_pt) > 260:
-            return False
-        parsed = urlparse(quote.source_url)
-        if parsed.scheme not in {"http", "https"} or not parsed.netloc:
-            return False
-        host = parsed.netloc.lower().removeprefix("www.")
-        return not any(host == domain or host.endswith(f".{domain}") for domain in BLOCKED_SOURCE_DOMAINS)
-
-    def _fetch_source_text(self, url: str) -> str:
+    def _fetch_page(self, author: str) -> str:
         try:
             response = requests.get(
-                url,
-                headers={"User-Agent": "Mozilla/5.0 (compatible; QuoteVerifier/1.0)"},
+                self.API_URL,
+                params={
+                    "action": "parse",
+                    "page": author,
+                    "prop": "text",
+                    "format": "json",
+                    "redirects": "1",
+                },
+                headers={"User-Agent": "UassiStoriesBot/1.0 (content curation)"},
                 timeout=20,
             )
             response.raise_for_status()
-            content_type = response.headers.get("content-type", "")
-            if "text/html" not in content_type and "text/plain" not in content_type:
-                return ""
-            soup = BeautifulSoup(response.text, "html.parser")
-            for tag in soup(["script", "style", "nav", "footer", "form"]):
-                tag.decompose()
-            text = " ".join(soup.get_text(" ", strip=True).split())
-            return text[:50000]
-        except requests.RequestException:
+            return response.json().get("parse", {}).get("text", {}).get("*", "")
+        except (requests.RequestException, ValueError):
             return ""
 
-    def _verify_against_source(self, quote: VerifiedQuote, page_text: str) -> dict:
-        prompt = f"""
-Atue como verificador rigoroso de citações. Analise APENAS o conteúdo da fonte
-recuperada abaixo. Não use memória externa.
+    @staticmethod
+    def _strip_editorial_suffix(text: str) -> str:
+        # Remover apenas notas editoriais evidentes; não altera o conteúdo da frase.
+        text = re.sub(r"\s*\(.*?(?:carece|citação|fonte).{0,80}\)$", "", text, flags=re.I)
+        return text.strip(" -–—")
 
-AUTOR DECLARADO: {quote.author}
-CITAÇÃO EM PORTUGUÊS: {quote.quote_pt}
-TEXTO ORIGINAL DECLARADO: {quote.original_quote}
-OBRA/FONTE: {quote.source_title}
-TIPO: {quote.source_type}
-TRADUZIDA: {quote.translated}
-
-CONTEÚDO RECUPERADO DA FONTE:
-{page_text}
-
-Marque verified=true somente se o conteúdo recuperado sustentar simultaneamente:
-1. a autoria;
-2. a existência da frase ou de seu equivalente original;
-3. a fidelidade substancial da tradução, quando houver;
-4. a identificação da obra, entrevista, discurso ou publicação.
-
-Na dúvida, retorne false. Responda exclusivamente:
-{{"verified": true, "reason": "justificativa objetiva"}}
-"""
-        for model in TEXT_MODELS:
-            try:
-                response = self.client.models.generate_content(
-                    model=model,
-                    contents=prompt,
-                    config=types.GenerateContentConfig(
-                        response_mime_type="application/json",
-                        temperature=0,
-                    ),
-                )
-                return json.loads(response.text)
-            except Exception:
-                continue
-        return {"verified": False, "reason": "Falha na segunda verificação."}
+    @staticmethod
+    def _is_usable_quote(text: str) -> bool:
+        if not 25 <= len(text) <= 260:
+            return False
+        if text.endswith(":") or text.count("http") > 0:
+            return False
+        return not any(marker in text.lower() for marker in ["ver também", "ligações externas"])
