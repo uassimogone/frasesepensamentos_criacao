@@ -2,22 +2,33 @@
 
 ## Escopo
 
-A automação produz Stories para o perfil `@uassimogone` contendo uma única citação por arte, obtida de fonte pública gratuita e rastreável.
+A automação produz três Stories diários para o perfil `@uassimogone`, cada um contendo uma única citação de fonte pública gratuita e rastreável.
 
 ## Critério de seleção
 
 Uma citação somente pode ser utilizada quando:
 
-1. estiver em uma página de autor da lista curada;
-2. tiver texto entre 25 e 260 caracteres;
-3. não for marcada pela própria página como “carece de fontes”;
-4. não estiver no histórico de publicações.
+1. estiver em uma página da lista editorial curada;
+2. estiver em português;
+3. tiver entre 20 e 240 caracteres;
+4. não estiver marcada como “carece de fontes” ou como atribuição duvidosa;
+5. não estiver no histórico de publicações;
+6. atingir a pontuação mínima de impacto editorial.
 
-A página do Wikiquote é a fonte de curadoria e seu link segue na ficha do Telegram para conferência humana durante a fase de testes.
+A pontuação favorece frases concisas, reflexivas, com tensão, contraste, pergunta, ideia memorável e aderência ao tema do rótulo. Textos genéricos, bibliográficos ou carregados de metadados perdem pontos.
+
+## Diversidade
+
+- Cada rótulo possui um repertório amplo de filósofos, escritores, líderes, artistas, atletas e obras culturais.
+- Autores usados nas 28 citações mais recentes recebem menor prioridade.
+- Cada execução busca autores diferentes entre si.
+- O histórico impede a reutilização da mesma frase ou de versões muito semelhantes.
 
 ## Fonte utilizada
 
-Inicialmente, a automação consulta páginas em português do Wikiquote, que são gratuitas e públicas. A lista de autores fica versionada no repositório e pode ser ampliada sem custo.
+A automação consulta páginas em português do Wikiquote, que são gratuitas e públicas. A lista editorial fica versionada no repositório e pode ser ampliada sem custo.
+
+A página consultada e seu link seguem na ficha do Telegram para conferência humana durante a fase de testes.
 
 ## Fontes proibidas como curadoria
 
@@ -27,25 +38,20 @@ Inicialmente, a automação consulta páginas em português do Wikiquote, que s�
 - imagens com frases;
 - compilações sem identificação de autor.
 
-## Traduções
+## Idioma e traduções
 
-O MVP publica somente o texto exibido pela fonte em português. Não cria traduções, adaptações ou paráfrases por IA.
+A automação publica somente o texto exibido pela fonte em português. Não cria traduções, adaptações ou paráfrases por IA. Textos em inglês, espanhol, francês, italiano ou outro idioma são descartados.
 
-## Dúvida
-
-A automação descarta as citações explicitamente marcadas como sem fonte. Durante os testes, o link da ficha deve ser conferido antes da publicação.
-
-## Identidade visual inicial
+## Identidade visual
 
 - 1080 × 1920;
-- fundo claro;
-- tipografia escura;
-- detalhe em vermelho profundo;
-- uma citação;
+- direção minimalista tipográfica;
+- paleta própria para cada rótulo;
+- citação em negrito e com forte hierarquia;
 - nome do autor;
 - assinatura `@uassimogone`;
 - margens de segurança para a interface do Instagram.
 
-## Fase de testes
+## Operação
 
-Os materiais são enviados por um bot exclusivo de testes. O workflow permanece manual até que conteúdo, layout e entrega sejam homologados.
+O workflow roda diariamente às 04h00 no horário de Brasília e envia três opções ao bot do Telegram. A escolha do conteúdo que será publicado permanece manual.
