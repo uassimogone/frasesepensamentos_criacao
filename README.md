@@ -4,7 +4,7 @@ Automação gratuita para coletar citações, criar Stories minimalistas e entre
 
 ## Estado do projeto
 
-O workflow gera **1 Story por dia**, às **04h00 no horário de Brasília**, e também pode ser executado manualmente para testes.
+O workflow gera **3 Stories por dia**, às **04h00 no horário de Brasília**, e também pode ser executado manualmente para testes.
 
 ## Fluxo
 
@@ -18,6 +18,16 @@ O workflow gera **1 Story por dia**, às **04h00 no horário de Brasília**, e t
 Não há Gemini, cobrança por IA ou qualquer outra API paga neste MVP.
 
 ## Política editorial
+
+Cada dia mantém sua identidade visual, fonte e tema, mas a arte mostra somente o rótulo editorial:
+
+- `COMEÇANDO`
+- `LUCIDEZ`
+- `FORÇA`
+- `ATITUDE`
+- `CULTURA`
+- `VIDA`
+- `GRATIDÃO`
 
 - A página pública do autor no Wikiquote é a fonte de curadoria e o link é entregue no Telegram.
 - Itens marcados como “carece de fontes” são rejeitados.
@@ -39,7 +49,7 @@ Configure em **Settings → Secrets and variables → Actions**:
 1. Abra **Actions**.
 2. Selecione **Gerar Stories de Citações**.
 3. Clique em **Run workflow**.
-4. Informe opcionalmente a quantidade; o padrão é 1.
+4. Informe opcionalmente a quantidade; o padrão é 3.
 
 ## Homologação
 
