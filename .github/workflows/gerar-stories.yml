@@ -9,7 +9,7 @@ on:
       quantidade:
         description: Quantidade de Stories nesta execucao
         required: true
-        default: "2"
+        default: "1"
         type: choice
         options: ["1", "2", "3"]
       dia:
@@ -54,8 +54,8 @@ jobs:
         env:
           TEST_TELEGRAM_BOT_TOKEN: ${{ secrets.TEST_TELEGRAM_BOT_TOKEN }}
           TEST_TELEGRAM_CHAT_ID: ${{ secrets.TEST_TELEGRAM_CHAT_ID }}
-          STORIES_PER_RUN: ${{ inputs.quantidade || '2' }}
-        run: python main.py --count "${{ inputs.quantidade || '2' }}" --day "${{ inputs.dia || 'automatico' }}"
+          STORIES_PER_RUN: ${{ inputs.quantidade || '1' }}
+        run: python main.py --count "${{ inputs.quantidade || '1' }}" --day "${{ inputs.dia || 'automatico' }}"
 
       - name: Persistir historico
         if: success()
