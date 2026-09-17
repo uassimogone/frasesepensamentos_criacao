@@ -27,6 +27,13 @@ class QuoteResearcher:
         "quer", "querer", "deve", "devemos", "próprio", "única", "coisa", "acontece",
         "enquanto", "está", "estão", "outros", "outro", "medo", "liberdade",
     }
+    PORTUGUESE_SIGNALS = {
+        "não", "você", "vocês", "uma", "umas", "um", "uns", "mais", "para", "com",
+        "pela", "pelo", "sua", "seu", "também", "muito", "nunca", "sempre", "ainda",
+        "é", "são", "está", "estão", "há", "nós", "aos", "às", "porque", "quando",
+        "fazer", "pode", "quer", "deve", "devemos", "próprio", "única", "acontece",
+        "enquanto", "liberdade",
+    }
     FOREIGN_MARKERS = {
         "the", "and", "of", "to", "in", "is", "that", "with", "for", "from", "are",
         "this", "you", "your", "not", "was", "will", "have", "be",
@@ -124,11 +131,12 @@ class QuoteResearcher:
             return False
 
         portuguese_hits = sum(word in cls.PORTUGUESE_MARKERS for word in words)
+        portuguese_signals = sum(word in cls.PORTUGUESE_SIGNALS for word in words)
         foreign_hits = sum(word in cls.FOREIGN_MARKERS for word in words)
 
-        # Duas ocorrências confirmam o idioma até em frases curtas; expressões
-        # estrangeiras com conectivos característicos são bloqueadas.
-        return portuguese_hits >= 2 and foreign_hits <= portuguese_hits
+        # Exige ao menos um marcador característico do português. Isso bloqueia
+        # inclusive frases em espanhol que compartilham palavras como "vida" e "que".
+        return portuguese_hits >= 2 and portuguese_signals >= 1 and foreign_hits <= portuguese_hits
 
     @classmethod
     def _is_usable_quote(cls, text: str) -> bool:
