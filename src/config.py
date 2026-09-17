@@ -9,27 +9,7 @@ STORIES_PER_RUN = int(__import__("os").getenv("STORIES_PER_RUN", "3"))
 HISTORY_PATH = BASE_DIR / "data" / "history.json"
 OUTPUT_DIR = BASE_DIR / "output"
 
-# Páginas gratuitas em português. Cada citação precisa trazer referência na página.
-WIKIQUOTE_AUTHORS = [
-    "Albert Einstein",
-    "Anaïs Nin",
-    "Aristóteles",
-    "Cícero",
-    "Confúcio",
-    "Eleanor Roosevelt",
-    "Epicteto",
-    "Friedrich Nietzsche",
-    "Hannah Arendt",
-    "Marco Aurélio",
-    "Maya Angelou",
-    "Michel de Montaigne",
-    "Nelson Mandela",
-    "Sêneca",
-    "Simone de Beauvoir",
-    "Virginia Woolf",
-    "Winston Churchill",
-]
-
+# O repertório de autores é definido por rótulo em editorial_calendar.py.
 BLOCKED_SOURCE_DOMAINS = {
     "pinterest.com",
     "brainyquote.com",
