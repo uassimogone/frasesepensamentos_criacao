@@ -30,10 +30,11 @@ Cada dia mantém sua identidade visual, fonte e tema, mas a arte mostra somente 
 - `GRATIDÃO`
 
 - A página pública do autor no Wikiquote é a fonte de curadoria e o link é entregue no Telegram.
+- Somente citações em português são aceitas; frases em outros idiomas são descartadas.
 - Itens marcados como “carece de fontes” são rejeitados.
 - Nunca usar Pinterest, redes sociais ou sites genéricos de frases como fonte de curadoria.
 - A ficha do Telegram permite conferir o conteúdo antes da publicação.
-- Cada arte contém uma única citação e seu autor.
+- Cada arte contém uma única citação e seu autor, com tipografia em negrito e maior destaque visual.
 
 Veja [docs/POLITICA_EDITORIAL.md](docs/POLITICA_EDITORIAL.md).
 
