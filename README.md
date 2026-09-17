@@ -1,6 +1,6 @@
 # Frases e Pensamentos — Criação de Stories
 
-Automação gratuita para coletar citações, criar Stories minimalistas e entregar os materiais em um bot do Telegram. A publicação no Instagram não faz parte deste repositório.
+Automação gratuita para pesquisar citações, fazer curadoria por impacto editorial, criar Stories minimalistas e entregar os materiais em um bot do Telegram. A publicação no Instagram não faz parte deste repositório.
 
 ## Estado do projeto
 
@@ -9,11 +9,12 @@ O workflow gera **3 Stories por dia**, às **04h00 no horário de Brasília**, e
 ## Fluxo
 
 1. Consulta páginas públicas gratuitas do Wikiquote em português.
-2. Seleciona autores de uma lista curada e descarta entradas marcadas como sem fonte.
-3. Evita textos fora do tamanho adequado ou já utilizados.
-4. Renderiza um Story 1080 × 1920 por citação.
-5. Envia a arte e a ficha de rastreabilidade ao Telegram.
-6. Atualiza o histórico no GitHub.
+2. Prioriza autores pouco utilizados nas últimas execuções.
+3. Rejeita conteúdo estrangeiro, sem fonte, genérico, excessivamente longo ou já utilizado.
+4. Ranqueia as citações por impacto, profundidade, concisão e aderência ao tema editorial.
+5. Renderiza um Story 1080 × 1920 por citação.
+6. Envia a arte e a ficha de rastreabilidade ao Telegram.
+7. Atualiza o histórico no GitHub.
 
 Não há Gemini, cobrança por IA ou qualquer outra API paga neste MVP.
 
@@ -32,6 +33,8 @@ Cada dia mantém sua identidade visual, fonte e tema, mas a arte mostra somente 
 - A página pública do autor no Wikiquote é a fonte de curadoria e o link é entregue no Telegram.
 - Somente citações em português são aceitas; frases em outros idiomas são descartadas.
 - Itens marcados como “carece de fontes” são rejeitados.
+- Frases meramente genéricas não atingem a pontuação mínima de impacto.
+- Autores recentes recebem menor prioridade para ampliar a diversidade.
 - Nunca usar Pinterest, redes sociais ou sites genéricos de frases como fonte de curadoria.
 - A ficha do Telegram permite conferir o conteúdo antes da publicação.
 - Cada arte contém uma única citação e seu autor, com tipografia em negrito e maior destaque visual.
@@ -56,11 +59,11 @@ Configure em **Settings → Secrets and variables → Actions**:
 
 Na fase de acompanhamento, validar:
 
+- impacto e profundidade da frase;
+- diversidade de autores e tradições;
 - qualidade e rastreabilidade das fontes;
 - legibilidade em celular;
-- textos curtos e longos;
 - não repetição;
-- indisponibilidade de fonte;
 - recebimento correto no bot de testes.
 
 ## Limitação consciente
