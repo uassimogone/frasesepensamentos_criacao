@@ -4,7 +4,7 @@ Automação gratuita para coletar citações, criar Stories minimalistas e entre
 
 ## Estado do projeto
 
-MVP em fase de testes. O workflow é executado manualmente e gera **2 Stories por execução**. O agendamento diário será habilitado somente após a homologação editorial e visual.
+O workflow gera **1 Story por dia**, às **04h00 no horário de Brasília**, e também pode ser executado manualmente para testes.
 
 ## Fluxo
 
@@ -39,11 +39,11 @@ Configure em **Settings → Secrets and variables → Actions**:
 1. Abra **Actions**.
 2. Selecione **Gerar Stories de Citações**.
 3. Clique em **Run workflow**.
-4. Informe opcionalmente a quantidade; o padrão é 2.
+4. Informe opcionalmente a quantidade; o padrão é 1.
 
 ## Homologação
 
-Antes de ativar o cron diário, validar:
+Na fase de acompanhamento, validar:
 
 - qualidade e rastreabilidade das fontes;
 - legibilidade em celular;
