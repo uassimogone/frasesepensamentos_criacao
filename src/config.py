@@ -4,7 +4,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 TELEGRAM_BOT_TOKEN = __import__("os").getenv("TEST_TELEGRAM_BOT_TOKEN", "").strip()
 TELEGRAM_CHAT_ID = __import__("os").getenv("TEST_TELEGRAM_CHAT_ID", "").strip()
-STORIES_PER_RUN = int(__import__("os").getenv("STORIES_PER_RUN", "2"))
+STORIES_PER_RUN = int(__import__("os").getenv("STORIES_PER_RUN", "1"))
 
 HISTORY_PATH = BASE_DIR / "data" / "history.json"
 OUTPUT_DIR = BASE_DIR / "output"
