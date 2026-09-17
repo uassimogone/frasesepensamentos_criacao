@@ -1,4 +1,5 @@
 import random
+import re
 from urllib.parse import quote
 
 import requests
@@ -9,9 +10,30 @@ from src.models import VerifiedQuote
 
 
 class QuoteResearcher:
-    """Coleta citações de páginas públicas gratuitas do Wikiquote em português."""
+    """Coleta somente citações em português de páginas públicas gratuitas do Wikiquote."""
 
     API_URL = "https://pt.wikiquote.org/w/api.php"
+
+    # Marcadores linguísticos: a citação precisa conter sinais suficientes de português
+    # e não pode ter predominância de conectivos de outros idiomas.
+    PORTUGUESE_MARKERS = {
+        "a", "ao", "aos", "as", "às", "com", "como", "da", "das", "de", "do", "dos",
+        "e", "é", "em", "ele", "ela", "eles", "elas", "entre", "essa", "esse", "esta",
+        "este", "eu", "foi", "há", "mais", "mas", "não", "nos", "nós", "o", "os", "ou",
+        "para", "pela", "pelo", "por", "porque", "que", "quem", "se", "sem", "ser",
+        "seu", "sua", "são", "também", "tem", "têm", "todo", "toda", "um", "uma",
+        "você", "vocês", "vida", "quando", "muito", "nunca", "sempre", "ainda",
+        "aquilo", "aqueles", "aquelas", "durante", "então", "fazer", "pode", "poder",
+        "quer", "querer", "deve", "devemos", "próprio", "única", "coisa", "acontece",
+        "enquanto", "está", "estão", "outros", "outro", "medo", "liberdade",
+    }
+    FOREIGN_MARKERS = {
+        "the", "and", "of", "to", "in", "is", "that", "with", "for", "from", "are",
+        "this", "you", "your", "not", "was", "will", "have", "be",
+        "el", "los", "las", "una", "es", "del", "y", "pero", "cuando", "siempre",
+        "le", "les", "des", "est", "et", "une", "dans", "pour", "avec",
+        "il", "gli", "non", "che", "nel", "della",
+    }
 
     def research(
         self,
@@ -65,7 +87,7 @@ class QuoteResearcher:
                     translated=False,
                     theme=", ".join(profile.themes),
                     verification_note=(
-                        "Citação coletada de página pública de curadoria, sem marcação "
+                        "Citação em português coletada de página pública de curadoria, sem marcação "
                         "de ausência de fonte. Confira o link antes da publicação definitiva."
                     ),
                 )
@@ -95,10 +117,23 @@ class QuoteResearcher:
             cleaned = cleaned[1:-1].strip()
         return cleaned
 
-    @staticmethod
-    def _is_usable_quote(text: str) -> bool:
+    @classmethod
+    def _is_portuguese(cls, text: str) -> bool:
+        words = re.findall(r"[a-záàâãéêíóôõúç]+", text.lower())
+        if not words:
+            return False
+
+        portuguese_hits = sum(word in cls.PORTUGUESE_MARKERS for word in words)
+        foreign_hits = sum(word in cls.FOREIGN_MARKERS for word in words)
+
+        # Duas ocorrências confirmam o idioma até em frases curtas; expressões
+        # estrangeiras com conectivos característicos são bloqueadas.
+        return portuguese_hits >= 2 and foreign_hits <= portuguese_hits
+
+    @classmethod
+    def _is_usable_quote(cls, text: str) -> bool:
         normalized = text.lower()
         if not 25 <= len(text) <= 260 or text.endswith(":") or "http" in text:
             return False
         rejected = ("ver também", "ligações externas", "carece de fontes", "carece de fonte", "citação necessária")
-        return not any(marker in normalized for marker in rejected)
+        return cls._is_portuguese(text) and not any(marker in normalized for marker in rejected)
