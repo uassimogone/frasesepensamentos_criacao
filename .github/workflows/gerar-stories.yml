@@ -2,8 +2,8 @@ name: Gerar Stories de Citacoes
 
 on:
   schedule:
-    # 04:00 no horário de Brasília (UTC-3)
-    - cron: "0 7 * * *"
+    # 05:40 no horário de Brasília (UTC-3), para entrega até 06:00
+    - cron: "40 8 * * *"
   workflow_dispatch:
     inputs:
       quantidade:
