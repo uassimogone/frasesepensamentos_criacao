@@ -54,4 +54,4 @@ A automação publica somente o texto exibido pela fonte em português. Não cri
 
 ## Operação
 
-O workflow roda diariamente às 04h00 no horário de Brasília e envia três opções ao bot do Telegram. A escolha do conteúdo que será publicado permanece manual.
+O workflow começa diariamente às 05h40 no horário de Brasília, com margem para entregar três opções ao bot do Telegram até 06h00. A escolha do conteúdo que será publicado permanece manual.
