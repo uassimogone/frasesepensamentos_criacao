@@ -4,7 +4,7 @@ Automação gratuita para pesquisar citações, fazer curadoria por impacto edit
 
 ## Estado do projeto
 
-O workflow gera **3 Stories por dia**, às **04h00 no horário de Brasília**, e também pode ser executado manualmente para testes.
+O workflow gera **3 Stories por dia**. A execução começa às **05h40 no horário de Brasília**, com margem para que os materiais estejam disponíveis no Telegram até **06h00**. Também pode ser executado manualmente para testes.
 
 ## Fluxo
 
