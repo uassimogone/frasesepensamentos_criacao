@@ -358,5 +358,50 @@
     "verification_note": "Citação em português, selecionada por relevância e impacto editorial, sem marcação de ausência de fonte. Confira o link antes da publicação.",
     "content_id": "4c650b316101c2f8",
     "published_to_telegram_at": "2026-09-19T12:05:54.300954+00:00"
+  },
+  {
+    "quote_pt": "O poder tende a corromper, e o poder absoluto corrompe absolutamente.",
+    "author": "Lord Acton",
+    "source_title": "Carta a Mandell Creighton, 5 de abril de 1887",
+    "source_url": "https://en.wikisource.org/wiki/Letter_to_Bishop_Mandell_Creighton,_April_5,_1887",
+    "source_type": "correspondência histórica",
+    "source_excerpt": "Power tends to corrupt, and absolute power corrupts absolutely.",
+    "original_quote": "Power tends to corrupt, and absolute power corrupts absolutely.",
+    "original_language": "inglês",
+    "translated": true,
+    "theme": "poder e corrupção",
+    "verification_note": "Tradução direta do trecho da carta de Lord Acton a Mandell Creighton.",
+    "content_id": "6b49c4b26fb62541",
+    "published_to_telegram_at": "2026-09-19T12:19:06.941622+00:00"
+  },
+  {
+    "quote_pt": "Todo homem que tem poder é levado a abusar dele; vai até encontrar limites.",
+    "author": "Montesquieu",
+    "source_title": "Do Espírito das Leis, Livro XI, capítulo IV",
+    "source_url": "https://www.gutenberg.org/files/27573/27573-h/27573-h.htm",
+    "source_type": "obra em domínio público",
+    "source_excerpt": "C’est une expérience éternelle, que tout homme qui a du pouvoir est porté à en abuser.",
+    "original_quote": "Tout homme qui a du pouvoir est porté à en abuser; il va jusqu’à ce qu’il trouve des limites.",
+    "original_language": "francês",
+    "translated": true,
+    "theme": "abuso de poder e limites institucionais",
+    "verification_note": "Tradução do Livro XI, capítulo IV, de Do Espírito das Leis.",
+    "content_id": "556e1c0b53754e77",
+    "published_to_telegram_at": "2026-09-19T12:19:09.122273+00:00"
+  },
+  {
+    "quote_pt": "De tanto ver triunfar as nulidades, de tanto ver prosperar a desonra, de tanto ver crescer a injustiça, de tanto ver agigantarem-se os poderes nas mãos dos maus, o homem chega a desanimar da virtude, a rir-se da honra, a ter vergonha de ser honesto.",
+    "author": "Rui Barbosa",
+    "source_title": "Oração aos Moços",
+    "source_url": "https://www2.senado.leg.br/bdsf/handle/id/573952",
+    "source_type": "obra histórica em acervo público",
+    "source_excerpt": "Trecho de Oração aos Moços, discurso aos formandos da Faculdade de Direito de São Paulo.",
+    "original_quote": "",
+    "original_language": "português",
+    "translated": false,
+    "theme": "desonra, injustiça e abuso de poder",
+    "verification_note": "Trecho atribuído à obra Oração aos Moços, de Rui Barbosa, em acervo do Senado Federal.",
+    "content_id": "eed9af741c029e27",
+    "published_to_telegram_at": "2026-09-19T12:19:11.333167+00:00"
   }
 ]
