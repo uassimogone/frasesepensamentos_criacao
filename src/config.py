@@ -7,6 +7,7 @@ TELEGRAM_CHAT_ID = __import__("os").getenv("TEST_TELEGRAM_CHAT_ID", "").strip()
 STORIES_PER_RUN = int(__import__("os").getenv("STORIES_PER_RUN", "3"))
 
 HISTORY_PATH = BASE_DIR / "data" / "history.json"
+DAILY_RUN_STATE_PATH = BASE_DIR / "data" / "daily_runs.json"
 OUTPUT_DIR = BASE_DIR / "output"
 
 # O repertório de autores é definido por rótulo em editorial_calendar.py.
