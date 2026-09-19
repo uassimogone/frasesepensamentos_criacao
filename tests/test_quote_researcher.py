@@ -43,3 +43,23 @@ def test_extracts_quote_without_nested_source_metadata():
     assert QuoteResearcher._extract_quote_text(item) == (
         "Não basta existir; é preciso encontrar um propósito para a vida."
     )
+
+
+def test_removes_repeated_wrapping_quotes():
+    assert QuoteResearcher._clean_quote_text('““A vida é agora.””') == "A vida é agora."
+
+
+def test_removes_wrapping_quotes_before_loose_period():
+    assert QuoteResearcher._clean_quote_text('"Somos aquilo que escolhemos".') == "Somos aquilo que escolhemos"
+
+
+def test_rejects_editorial_warning_about_altered_content():
+    text = '"Se você sabe explicar, então compreendeu." (conteúdo adulterado, veja acima)'
+    assert QuoteResearcher._has_attribution_warning(text)
+    assert not QuoteResearcher._is_usable_quote(text)
+
+
+def test_rejects_editorial_warning_about_missing_authorship():
+    text = '"A vida não começa amanhã; ela acontece hoje." (em busca da autoria)'
+    assert QuoteResearcher._has_attribution_warning(text)
+    assert not QuoteResearcher._is_usable_quote(text)
