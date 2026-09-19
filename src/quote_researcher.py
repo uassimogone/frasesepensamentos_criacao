@@ -43,6 +43,14 @@ class QuoteResearcher:
         "le", "les", "des", "est", "et", "une", "dans", "pour", "avec",
         "il", "gli", "non", "che", "nel", "della",
     }
+    ATTRIBUTION_WARNINGS = (
+        "conteúdo adulterado", "conteudo adulterado", "em busca da autoria",
+        "autoria desconhecida", "autor desconhecido", "sem autoria",
+        "sem confirmação", "sem confirmacao", "falsamente atribuída",
+        "falsamente atribuida", "falsamente atribuído", "falsamente atribuido",
+        "atribuída a", "atribuida a", "atribuído a", "atribuido a",
+        "citação apócrifa", "citacao apocrifa", "frase apócrifa", "frase apocrifa",
+    )
 
     IMPACT_PATTERNS = (
         "não é", "não basta", "não há", "mas ", "quem ", "quando ", "enquanto ",
@@ -119,7 +127,10 @@ class QuoteResearcher:
         soup = BeautifulSoup(html, "html.parser")
         candidates = []
         for item in soup.select("li"):
-            text = self._extract_quote_text(item)
+            raw_text = self._extract_quote_text(item)
+            if self._has_attribution_warning(raw_text):
+                continue
+            text = self._clean_quote_text(raw_text)
             if not self._is_usable_quote(text):
                 continue
             if self._impact_score(text, profile) < self.MIN_IMPACT_SCORE:
@@ -127,7 +138,7 @@ class QuoteResearcher:
 
             candidates.append(
                 VerifiedQuote(
-                    quote_pt=self._strip_wrapping_quotes(text.strip(" -–—")),
+                    quote_pt=text,
                     author=author,
                     source_title=f"Wikiquote em português — {page}",
                     source_url=f"https://pt.wikiquote.org/wiki/{quote(page.replace(' ', '_'))}",
@@ -187,6 +198,32 @@ class QuoteResearcher:
         return cleaned
 
     @classmethod
+    def _has_attribution_warning(cls, text: str) -> bool:
+        normalized = text.casefold()
+        return any(marker in normalized for marker in cls.ATTRIBUTION_WARNINGS)
+
+    @classmethod
+    def _clean_quote_text(cls, text: str) -> str:
+        """Mantém somente a citação, sem aspas externas ou notas editoriais."""
+        cleaned = re.sub(r"\[\s*\d+\s*\]", "", text or "")
+        cleaned = " ".join(cleaned.split()).strip(" -–—")
+
+        # Se a fonte abriu a frase com aspas, usa o primeiro bloco completo e
+        # descarta ponto solto ou comentário que venha depois do fechamento.
+        quote_pairs = {'"': '"', "“": "”", "„": "”", "‟": "”", "«": "»", "‹": "›"}
+        if cleaned and cleaned[0] in quote_pairs:
+            closing = quote_pairs[cleaned[0]]
+            end = cleaned.find(closing, 1)
+            if end > 1:
+                cleaned = cleaned[1:end].strip()
+
+        # Trata aspas duplicadas e casos como: "frase".
+        cleaned = re.sub(r"[\s.,;:]+$", lambda match: match.group(0).rstrip(), cleaned).strip()
+        cleaned = cls._strip_wrapping_quotes(cleaned)
+        cleaned = re.sub(r"^[\"“”„‟«»‹›]+|[\"“”„‟«»‹›]+$", "", cleaned).strip()
+        return cleaned
+
+    @classmethod
     def _impact_score(cls, text: str, profile: DayProfile) -> int:
         normalized = text.casefold()
         words = re.findall(r"[a-záàâãéêíóôõúç]+", normalized)
@@ -236,6 +273,10 @@ class QuoteResearcher:
             return False
         rejected = (
             "ver também", "ligações externas", "carece de fontes", "carece de fonte",
-            "citação necessária", "sem fontes", "frases atribuídas", "atribuída a",
+            "citação necessária", "sem fontes", "frases atribuídas",
         )
-        return cls._is_portuguese(text) and not any(marker in normalized for marker in rejected)
+        return (
+            cls._is_portuguese(text)
+            and not cls._has_attribution_warning(text)
+            and not any(marker in normalized for marker in rejected)
+        )
