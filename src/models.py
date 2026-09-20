@@ -1,5 +1,6 @@
 from dataclasses import asdict, dataclass
 import hashlib
+from pathlib import Path
 import re
 import unicodedata
 
@@ -39,3 +40,12 @@ class VerifiedQuote:
     def from_dict(cls, payload: dict) -> "VerifiedQuote":
         allowed = cls.__dataclass_fields__.keys()
         return cls(**{key: payload.get(key) for key in allowed})
+
+
+@dataclass(frozen=True)
+class VisualAsset:
+    local_path: Path
+    source_url: str
+    license_name: str
+    creator: str = ""
+    title: str = ""

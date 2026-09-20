@@ -43,8 +43,11 @@ class QuoteResearcher:
         "le", "les", "des", "est", "et", "une", "dans", "pour", "avec",
         "il", "gli", "non", "che", "nel", "della",
     }
-    ATTRIBUTION_WARNINGS = (
-        "conteúdo adulterado", "conteudo adulterado", "em busca da autoria",
+    CONTENT_WARNINGS = (
+        "conteúdo adulterado", "conteudo adulterado",
+    )
+    UNCERTAIN_AUTHORSHIP = (
+        "em busca da autoria",
         "autoria desconhecida", "autor desconhecido", "sem autoria",
         "sem confirmação", "sem confirmacao", "falsamente atribuída",
         "falsamente atribuida", "falsamente atribuído", "falsamente atribuido",
@@ -128,8 +131,9 @@ class QuoteResearcher:
         candidates = []
         for item in soup.select("li"):
             raw_text = self._extract_quote_text(item)
-            if self._has_attribution_warning(raw_text):
+            if self._has_content_warning(raw_text):
                 continue
+            displayed_author = "" if self._has_uncertain_authorship(raw_text) else author
             text = self._clean_quote_text(raw_text)
             if not self._is_usable_quote(text):
                 continue
@@ -139,7 +143,7 @@ class QuoteResearcher:
             candidates.append(
                 VerifiedQuote(
                     quote_pt=text,
-                    author=author,
+                    author=displayed_author,
                     source_title=f"Wikiquote em português — {page}",
                     source_url=f"https://pt.wikiquote.org/wiki/{quote(page.replace(' ', '_'))}",
                     source_type="página pública de curadoria",
@@ -148,8 +152,9 @@ class QuoteResearcher:
                     translated=False,
                     theme=", ".join(profile.themes),
                     verification_note=(
-                        "Citação em português, selecionada por relevância e impacto editorial, "
-                        "sem marcação de ausência de fonte. Confira o link antes da publicação."
+                        "A fonte não comprova a autoria; o nome foi omitido na arte."
+                        if not displayed_author
+                        else "Citação em português localizada na página pública indicada."
                     ),
                 )
             )
@@ -198,15 +203,29 @@ class QuoteResearcher:
         return cleaned
 
     @classmethod
-    def _has_attribution_warning(cls, text: str) -> bool:
+    def _has_content_warning(cls, text: str) -> bool:
         normalized = text.casefold()
-        return any(marker in normalized for marker in cls.ATTRIBUTION_WARNINGS)
+        return any(marker in normalized for marker in cls.CONTENT_WARNINGS)
+
+    @classmethod
+    def _has_uncertain_authorship(cls, text: str) -> bool:
+        normalized = text.casefold()
+        return any(marker in normalized for marker in cls.UNCERTAIN_AUTHORSHIP)
 
     @classmethod
     def _clean_quote_text(cls, text: str) -> str:
         """Mantém somente a citação, sem aspas externas ou notas editoriais."""
         cleaned = re.sub(r"\[\s*\d+\s*\]", "", text or "")
         cleaned = " ".join(cleaned.split()).strip(" -–—")
+
+        normalized = cleaned.casefold()
+        warning_positions = [
+            normalized.find(marker)
+            for marker in cls.UNCERTAIN_AUTHORSHIP
+            if normalized.find(marker) >= 0
+        ]
+        if warning_positions:
+            cleaned = cleaned[:min(warning_positions)].rstrip(" ([{-–—,:;")
 
         # Se a fonte abriu a frase com aspas, usa o primeiro bloco completo e
         # descarta ponto solto ou comentário que venha depois do fechamento.
@@ -277,6 +296,6 @@ class QuoteResearcher:
         )
         return (
             cls._is_portuguese(text)
-            and not cls._has_attribution_warning(text)
+            and not cls._has_content_warning(text)
             and not any(marker in normalized for marker in rejected)
         )

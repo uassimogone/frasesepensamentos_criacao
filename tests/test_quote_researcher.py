@@ -55,11 +55,31 @@ def test_removes_wrapping_quotes_before_loose_period():
 
 def test_rejects_editorial_warning_about_altered_content():
     text = '"Se você sabe explicar, então compreendeu." (conteúdo adulterado, veja acima)'
-    assert QuoteResearcher._has_attribution_warning(text)
+    assert QuoteResearcher._has_content_warning(text)
     assert not QuoteResearcher._is_usable_quote(text)
 
 
-def test_rejects_editorial_warning_about_missing_authorship():
+def test_marks_missing_authorship_without_rejecting_clean_quote():
     text = '"A vida não começa amanhã; ela acontece hoje." (em busca da autoria)'
-    assert QuoteResearcher._has_attribution_warning(text)
-    assert not QuoteResearcher._is_usable_quote(text)
+    assert QuoteResearcher._has_uncertain_authorship(text)
+    cleaned = QuoteResearcher._clean_quote_text(text)
+    assert cleaned == "A vida não começa amanhã; ela acontece hoje."
+    assert QuoteResearcher._is_usable_quote(cleaned)
+
+
+def test_removes_unquoted_authorship_note():
+    text = "A prudência começa quando a certeza termina. (autoria desconhecida)"
+    assert QuoteResearcher._clean_quote_text(text) == "A prudência começa quando a certeza termina."
+
+
+def test_uncertain_authorship_is_omitted(monkeypatch):
+    researcher = QuoteResearcher()
+    monkeypatch.setattr(
+        researcher,
+        "_fetch_page",
+        lambda page: '<ul><li>"A vida não começa amanhã; ela acontece hoje." (em busca da autoria)</li></ul>',
+    )
+    items = researcher._quotes_from_source("Autor Suposto", "Página", get_profile("domingo"))
+
+    assert items
+    assert items[0].author == ""

@@ -11,7 +11,7 @@ Uma citação somente pode ser utilizada quando:
 1. estiver em uma página da lista editorial curada;
 2. estiver em português;
 3. tiver entre 20 e 240 caracteres;
-4. não estiver marcada como “carece de fontes” ou como atribuição duvidosa;
+4. não estiver marcada como conteúdo adulterado;
 5. não estiver no histórico de publicações;
 6. atingir a pontuação mínima de impacto editorial.
 
@@ -28,7 +28,7 @@ A pontuação favorece frases concisas, reflexivas, com tensão, contraste, perg
 
 A automação consulta páginas em português do Wikiquote, que são gratuitas e públicas. A lista editorial fica versionada no repositório e pode ser ampliada sem custo.
 
-A página consultada e seu link seguem na ficha do Telegram para conferência humana durante a fase de testes.
+A página consultada e seu link seguem na ficha do Telegram para conferência humana durante a fase de testes. Quando a frase é adequada, mas a página não comprova a autoria, o nome é omitido na arte e a incerteza é registrada na ficha.
 
 ## Fontes proibidas como curadoria
 
@@ -45,13 +45,15 @@ A automação publica somente o texto exibido pela fonte em português. Não cri
 ## Identidade visual
 
 - 1080 × 1920;
-- direção minimalista tipográfica;
+- direção editorial clássica, escura e cinematográfica quando houver imagem aberta adequada;
+- busca de imagens no Wikimedia Commons, com resolução mínima e licença aberta;
+- fallback minimalista tipográfico quando a imagem for inadequada, pequena ou indisponível;
 - paleta própria para cada rótulo;
 - citação em negrito e com forte hierarquia;
-- nome do autor;
+- nome do autor somente quando a autoria estiver comprovada;
 - assinatura `@uassimogone`;
 - margens de segurança para a interface do Instagram.
 
 ## Operação
 
-O workflow começa diariamente às 05h40 no horário de Brasília, com margem para entregar três opções ao bot do Telegram até 06h00. A escolha do conteúdo que será publicado permanece manual.
+O workflow possui janelas às 05h03, 05h23 e 05h43 no horário de Brasília. Uma trava diária impede envios repetidos. Um disparo externo de contingência às 05h45 aciona o mesmo fluxo quando necessário, para entregar três opções ao Telegram antes das 06h00. A escolha do conteúdo que será publicado permanece manual.
