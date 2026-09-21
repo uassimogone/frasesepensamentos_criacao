@@ -1,5 +1,6 @@
 {
-  "requested_at": "2026-09-19T21:18:00Z",
-  "mode": "poder_corrupcao",
-  "count": 3
+  "requested_at": "2026-09-21T05:47:33-03:00",
+  "mode": "normal",
+  "count": 3,
+  "trigger": "contingencia_0545"
 }
