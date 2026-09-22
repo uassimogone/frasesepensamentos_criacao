@@ -583,5 +583,50 @@
     "verification_note": "Citação em português localizada na página pública indicada.",
     "content_id": "abf514b29c1eccaf",
     "published_to_telegram_at": "2026-09-22T08:45:15.411671+00:00"
+  },
+  {
+    "quote_pt": "Se podes olhar, vê. Se podes ver, repara.",
+    "author": "",
+    "source_title": "Livro dos Conselhos, de D. Duarte — epígrafe de Ensaio sobre a Cegueira",
+    "source_url": "https://jornal.usp.br/artigos/se-podes-olhar-ve-se-podes-ver-repara/",
+    "source_type": "obra histórica e referência acadêmica",
+    "source_excerpt": "A frase é identificada como epígrafe de Ensaio sobre a Cegueira.",
+    "original_quote": "",
+    "original_language": "português",
+    "translated": false,
+    "theme": "lucidez e atenção",
+    "verification_note": "A autoria foi omitida na arte para evitar atribuição imprecisa; a fonte confirma seu uso como epígrafe no romance.",
+    "content_id": "ae8f33b45a76703a",
+    "published_to_telegram_at": "2026-09-22T09:43:58.868591+00:00"
+  },
+  {
+    "quote_pt": "Não me pergunte quem sou e não me diga para permanecer o mesmo.",
+    "author": "Michel Foucault",
+    "source_title": "A Arqueologia do Saber",
+    "source_url": "https://pt.wikiquote.org/wiki/Michel_Foucault",
+    "source_type": "obra filosófica",
+    "source_excerpt": "Não me pergunte quem sou e não me diga para permanecer o mesmo.",
+    "original_quote": "",
+    "original_language": "francês",
+    "translated": true,
+    "theme": "identidade e transformação",
+    "verification_note": "Formulação curta atribuída à introdução de A Arqueologia do Saber; selecionada por clareza e força editorial.",
+    "content_id": "2447a7ee9af07ce0",
+    "published_to_telegram_at": "2026-09-22T09:44:09.672136+00:00"
+  },
+  {
+    "quote_pt": "A estupidez insiste sempre.",
+    "author": "Albert Camus",
+    "source_title": "A Peste",
+    "source_url": "https://pt.wikiquote.org/wiki/Albert_Camus",
+    "source_type": "obra literária",
+    "source_excerpt": "La bêtise insiste toujours.",
+    "original_quote": "La bêtise insiste toujours.",
+    "original_language": "francês",
+    "translated": true,
+    "theme": "lucidez e discernimento",
+    "verification_note": "Tradução direta de formulação atribuída a A Peste; selecionada por concisão e tensão.",
+    "content_id": "d5b15e4cdbdbe272",
+    "published_to_telegram_at": "2026-09-22T09:44:19.529938+00:00"
   }
 ]
