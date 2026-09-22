@@ -53,6 +53,12 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
 
+      - name: Ler gatilho de curadoria
+        if: github.event_name == 'push'
+        run: |
+          SPECIAL="$(python -c 'import json; print("lucidez_revisada" if json.load(open("data/run-now.json", encoding="utf-8")).get("mode") == "lucidez_revisada" else "nenhum")')"
+          echo "SPECIAL=$SPECIAL" >> "$GITHUB_ENV"
+
       - name: Executar testes
         run: python -m pytest -q
 
