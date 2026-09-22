@@ -8,19 +8,19 @@ from src.history_manager import HistoryManager
 from src.image_researcher import ImageResearcher
 from src.quote_researcher import QuoteResearcher
 from src.story_renderer import StoryRenderer
-from src.special_quotes import POWER_PROFILE, power_and_corruption_quotes
+from src.special_quotes import (\n    LUCIDEZ_REVISADA_PROFILE,\n    POWER_PROFILE,\n    power_and_corruption_quotes,\n    revised_lucidity_quotes,\n)
 from src.telegram_bot import TelegramBot
 
 
 def run(total: int, day_override: str, run_mode: str = "workflow_dispatch", special: str = "nenhum") -> int:
     guard = DailyRunGuard(DAILY_RUN_STATE_PATH)
-    is_special = special == "poder_corrupcao"
+    is_special = special in {"poder_corrupcao", "lucidez_revisada"}
     guarded_run = run_mode in {"schedule", "push"} and not is_special
     if guarded_run and guard.already_completed():
         print("⏭️ A entrega automática de hoje já foi concluída; esta janela redundante será ignorada.")
         return 0
 
-    profile = POWER_PROFILE if is_special else get_profile(day_override)
+    profile = (\n        POWER_PROFILE if special == "poder_corrupcao"\n        else LUCIDEZ_REVISADA_PROFILE if special == "lucidez_revisada"\n        else get_profile(day_override)\n    )
     print(f"▶️ {profile.label}: gerando {total} Stories com fontes públicas.")
     history = HistoryManager(HISTORY_PATH)
     renderer = StoryRenderer()
@@ -56,7 +56,7 @@ def parse_args():
     parser.add_argument("--count", type=int, default=STORIES_PER_RUN)
     parser.add_argument("--day", default="automatico", choices=["automatico", "segunda", "terca", "quarta", "quinta", "sexta", "sabado", "domingo"])
     parser.add_argument("--run-mode", default="workflow_dispatch", choices=["schedule", "workflow_dispatch", "push"])
-    parser.add_argument("--special", default="nenhum", choices=["nenhum", "poder_corrupcao"])
+    parser.add_argument("--special", default="nenhum", choices=["nenhum", "poder_corrupcao", "lucidez_revisada"])
     return parser.parse_args()
 
 
