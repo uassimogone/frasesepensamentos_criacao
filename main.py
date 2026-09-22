@@ -8,7 +8,12 @@ from src.history_manager import HistoryManager
 from src.image_researcher import ImageResearcher
 from src.quote_researcher import QuoteResearcher
 from src.story_renderer import StoryRenderer
-from src.special_quotes import (\n    LUCIDEZ_REVISADA_PROFILE,\n    POWER_PROFILE,\n    power_and_corruption_quotes,\n    revised_lucidity_quotes,\n)
+from src.special_quotes import (
+    LUCIDEZ_REVISADA_PROFILE,
+    POWER_PROFILE,
+    power_and_corruption_quotes,
+    revised_lucidity_quotes,
+)
 from src.telegram_bot import TelegramBot
 
 
@@ -20,7 +25,11 @@ def run(total: int, day_override: str, run_mode: str = "workflow_dispatch", spec
         print("⏭️ A entrega automática de hoje já foi concluída; esta janela redundante será ignorada.")
         return 0
 
-    profile = (\n        POWER_PROFILE if special == "poder_corrupcao"\n        else LUCIDEZ_REVISADA_PROFILE if special == "lucidez_revisada"\n        else get_profile(day_override)\n    )
+    profile = (
+        POWER_PROFILE if special == "poder_corrupcao"
+        else LUCIDEZ_REVISADA_PROFILE if special == "lucidez_revisada"
+        else get_profile(day_override)
+    )
     print(f"▶️ {profile.label}: gerando {total} Stories com fontes públicas.")
     history = HistoryManager(HISTORY_PATH)
     renderer = StoryRenderer()
@@ -28,7 +37,9 @@ def run(total: int, day_override: str, run_mode: str = "workflow_dispatch", spec
     telegram = TelegramBot(TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID)
     candidates = (
         power_and_corruption_quotes()[:total]
-        if is_special
+        if special == "poder_corrupcao"
+        else revised_lucidity_quotes()[:total]
+        if special == "lucidez_revisada"
         else QuoteResearcher().research(total, history.read(), profile)
     )
 
