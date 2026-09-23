@@ -27,6 +27,10 @@ on:
         type: choice
         options: ["automatico", "segunda", "terca", "quarta", "quinta", "sexta", "sabado", "domingo"]
 
+concurrency:
+  group: stories-diarios
+  cancel-in-progress: false
+
 jobs:
   gerar:
     runs-on: ubuntu-latest
