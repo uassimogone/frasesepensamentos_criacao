@@ -1,6 +1,6 @@
 {
-  "requested_at": "2026-09-22T06:43:21-03:00",
-  "mode": "lucidez_revisada",
+  "requested_at": "2026-09-23T07:07:45-03:00",
+  "mode": "normal",
   "count": 3,
-  "trigger": "substituicao_editorial"
+  "trigger": "recuperacao_diaria"
 }
